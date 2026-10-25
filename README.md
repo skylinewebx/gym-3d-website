@@ -49,7 +49,7 @@ scripts/optimize-media.sh video  media-src/hero-master.mp4           # hero tier
 FPS=60 scripts/optimize-media.sh video media-src/hero-master.mp4     # smoother 60fps loop
 scripts/optimize-media.sh images media-src/images public/images      # caps at 2560px, never upscales
 ```
-On Windows run it from Git Bash or WSL. Photos are pre-sized JPEGs (max 2560px, quality 90; Vercel also serves AVIF/WebP); `node scripts/import-assets.mjs "<folder>"` regenerates them with sharpening and blur placeholders. The hero loads the lightest video tier for phones and shows the poster only on slow/Save-Data connections or with reduced motion. Do not ship raw 8K files.
+On Windows run it from Git Bash or WSL. `node scripts/import-assets.mjs "<folder>"` turns your photos into sharpened JPEGs (max 2560px) plus responsive WebP sizes (480-2560px) and blur previews. The GitHub Pages build serves those WebP sizes through `lib/image-loader.ts`; on Vercel the Next.js optimizer serves AVIF/WebP. The hero loads the lightest video tier for phones and shows the poster only on slow/Save-Data connections or with reduced motion. Do not ship raw 8K files.
 
 ## Notes
 - Spam protection: hidden honeypot field; on Vercel also server-side validation and an in-memory rate limit (5 per 10 min per IP, best effort on serverless; use Upstash for strict limits).

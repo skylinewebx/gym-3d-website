@@ -9,7 +9,7 @@ import { has } from "@/lib/assets";
 import Behaviors from "@/components/Behaviors";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
-const display = Barlow_Condensed({ subsets: ["latin"], weight: ["700", "800"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
+const display = Barlow_Condensed({ subsets: ["latin"], weight: ["700", "800"], style: ["normal", "italic"], variable: "--font-display", display: "block" });
 const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 const title = `${gym.name} ${gym.nameAccent} | Gym in ${gym.address.city}`;
