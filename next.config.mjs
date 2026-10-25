@@ -11,7 +11,11 @@ const nextConfig = {
   basePath,
   env: { NEXT_PUBLIC_BASE_PATH: basePath, NEXT_PUBLIC_STATIC_EXPORT: isStatic ? "1" : "" },
   ...(isStatic
-    ? { output: "export", trailingSlash: true, assetPrefix: basePath || undefined, images: { unoptimized: true } }
+    ? { output: "export", trailingSlash: true, assetPrefix: basePath || undefined, images: {
+          // No image server on static hosting: a custom loader points at the pre-generated WebP sizes (scripts/import-assets.mjs).
+          loader: "custom", loaderFile: "./lib/image-loader.ts",
+          deviceSizes: [480, 768, 1080, 1440, 1920, 2560], imageSizes: [96, 256, 384],
+        } }
     : {
         images: {
           formats: ["image/avif", "image/webp"],

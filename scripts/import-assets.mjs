@@ -34,6 +34,8 @@ const jobs = [
 ];
 
 const blur = {};
+const widthsManifest = {}; // src -> available WebP widths (used by lib/image-loader.ts on the static build)
+const VARIANTS = [480, 768, 1080, 1440, 1920, 2560];
 const MAX_W = 2560;
 
 for (const j of jobs) {
@@ -49,6 +51,14 @@ for (const j of jobs) {
   // withoutEnlargement: never upscale. Mild unsharp mask keeps edges crisp after Next's resizing.
   await sharp(buf).resize({ width: MAX_W, withoutEnlargement: true, kernel: "lanczos3" }).sharpen({ sigma: 0.6, m1: 0.8, m2: 1.5 })
     .jpeg({ quality: 90, mozjpeg: true, progressive: true, chromaSubsampling: "4:4:4" }).toFile(dest);
+  // Responsive WebP variants (never upscaled) so phones download ~40-100 KB instead of the 2560px original.
+  const srcW = Math.min((await sharp(buf).metadata()).width, MAX_W);
+  const ws = [...VARIANTS.filter((w) => w < srcW), srcW];
+  for (const w of ws) {
+    await sharp(buf).resize({ width: w, withoutEnlargement: true, kernel: "lanczos3" }).sharpen({ sigma: 0.5, m1: 0.8, m2: 1.5 })
+      .webp({ quality: 82, effort: 5 }).toFile(dest.replace(/\.jpg$/, `-${w}.webp`));
+  }
+  widthsManifest["/images/" + j.out] = ws;
   const tiny = await sharp(buf).resize(20).blur(1).jpeg({ quality: 60 }).toBuffer();
   blur["/images/" + j.out] = "data:image/jpeg;base64," + tiny.toString("base64");
   console.log("ok", j.out);
@@ -66,4 +76,5 @@ await sharp(og).composite([{ input: svg }]).jpeg({ quality: 88, mozjpeg: true })
 console.log("ok brand/og.jpg");
 
 fs.writeFileSync("data/blur.json", JSON.stringify(blur));
+fs.writeFileSync("data/image-widths.json", JSON.stringify(widthsManifest));
 console.log("wrote data/blur.json");
