@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Theme tokens (space-separated RGB so Tailwind opacity works) ---------- */
+:root {
+  --bg: 10 11 16;          /* #0A0B10 */
+  --surface: 18 20 27;     /* #12141B */
+  --border: 35 38 47;      /* #23262F */
+  --text: 242 242 243;     /* #F2F2F3 */
+  --muted: 154 157 168;    /* #9A9DA8 */
+}
+[data-theme="lime"] { --accent: 198 255 61;  --accent-contrast: 11 11 13; }   /* #C6FF3D / #0B0B0D */
+[data-theme="red"]  { --accent: 255 59 48;   --accent-contrast: 255 255 255; } /* #FF3B30 / #FFFFFF */
+[data-theme="grey"] { --accent: 212 212 216; --accent-contrast: 11 11 13; }   /* #D4D4D8 / #0B0B0D */
+
+@layer base {
+  html { overflow-x: clip; scroll-behavior: smooth; scroll-padding-top: 5rem; color-scheme: dark; }
+  body { @apply bg-bg font-body text-fg antialiased; text-rendering: optimizeLegibility; }
+  h1, h2, h3, h4 { @apply font-display uppercase font-extrabold leading-[0.95] tracking-tight; }
+  :focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: rgb(var(--accent)); color: rgb(var(--accent-contrast)); }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .section { @apply py-16 sm:py-24; }
+  .h-section { @apply text-4xl sm:text-5xl lg:text-6xl; }
+  .eyebrow { @apply mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent; }
+  .card { @apply rounded-card border border-line bg-surface; }
+  .btn { @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 text-sm font-bold uppercase tracking-wider transition-colors duration-200; }
+  .btn-accent { @apply bg-accent text-accent-contrast hover:bg-fg; }
+  .btn-ghost { @apply border border-line text-fg hover:border-accent hover:text-accent; }
+  .input { @apply min-h-[48px] w-full rounded-xl border border-line bg-bg px-4 text-base text-fg placeholder:text-muted/70 transition-colors focus:border-accent; }
+}
+
+/* ---------- Scroll reveal (plays once; only when JS + motion allowed) ---------- */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transition: opacity 500ms ease-out, transform 500ms ease-out; will-change: opacity, transform; }
+  .reveal[data-dir="left"]  { transform: translateX(-48px); }
+  .reveal[data-dir="right"] { transform: translateX(48px); }
+  .reveal[data-dir="up"]    { transform: translateY(28px); }
+  .reveal.is-in { opacity: 1; transform: none; }
+}
+
+/* ---------- Marquee ---------- */
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 40s linear infinite; width: max-content; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+/* Accordion: avoid default marker */
+summary::-webkit-details-marker { display: none; }
+
+/* ---------- Hero entrance: short fade-up, staggered. Off for reduced motion. ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-in > * { animation: rise 600ms ease-out both; }
+  .hero-in > *:nth-child(2) { animation-delay: 80ms; }
+  .hero-in > *:nth-child(3) { animation-delay: 160ms; }
+  .hero-in > *:nth-child(4) { animation-delay: 240ms; }
+  .hero-in > *:nth-child(5) { animation-delay: 320ms; }
+}
+.btn:active { transform: scale(0.98); }
