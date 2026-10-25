@@ -1,8 +1,27 @@
 # Gym Website (Next.js, dark, premium)
 
-Next.js App Router + TypeScript + Tailwind CSS. Forms save to Supabase and email the owner via Resend. Deploys to Vercel (USA, `iad1`).
+## Deploy to Vercel (USA, `iad1`): 5 steps
+GitHub only stores the code. It does not run the site. The live site runs on Vercel.
 
-## Setup
+1. Go to **vercel.com/new** and choose **Continue with GitHub**.
+2. Click **Import** next to this repository. Leave all build settings as they are (Next.js is detected; the region `iad1` is already set in `vercel.json`).
+3. Open **Environment Variables** and add the variables below.
+4. Click **Deploy**. In 1-2 minutes you get a link like `https://your-project.vercel.app`.
+5. Add your own domain under **Settings > Domains**, then set `NEXT_PUBLIC_SITE_URL` to it and redeploy.
+
+### Environment variables (exact names)
+| Name | Required | Value |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Yes | Your final URL, no trailing slash, e.g. `https://www.yourgym.com` |
+| `SUPABASE_URL` | Yes (to save leads) | Supabase > Project Settings > API > Project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes (to save leads) | Supabase > Project Settings > API > `service_role` key. Keep secret |
+| `RESEND_API_KEY` | Yes (to email the owner) | resend.com > API Keys |
+| `LEAD_NOTIFY_EMAIL` | Yes (to email the owner) | Where new leads are sent |
+| `LEAD_FROM_EMAIL` | Optional | e.g. `Leads <leads@yourgym.com>` (verify the domain in Resend; default is `onboarding@resend.dev`) |
+
+Before the first lead: run `supabase/schema.sql` once in the Supabase SQL editor. In production the form returns an error if neither Supabase nor Resend is configured, so you never lose leads silently. Do not use static export or GitHub Pages: the form needs the `/api/lead` server route.
+
+## Local setup
 ```bash
 npm install
 cp .env.example .env.local   # fill in values (optional for local dev)

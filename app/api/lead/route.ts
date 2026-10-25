@@ -30,6 +30,11 @@ export async function POST(req: Request) {
 
   const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, LEAD_NOTIFY_EMAIL, LEAD_FROM_EMAIL } = process.env;
   const configured = !!(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) || !!(RESEND_API_KEY && LEAD_NOTIFY_EMAIL);
+  if (!configured && process.env.NODE_ENV === "production") {
+    // Never pretend success in production: the owner would silently lose every lead.
+    console.error("[lead] Supabase and Resend are not configured; lead dropped:", row.phone);
+    return NextResponse.json({ error: "We couldn't submit right now. Please call or WhatsApp us." }, { status: 503 });
+  }
   if (!configured) {
     console.warn("[lead] Supabase/Resend not configured. Lead logged only:", row);
     return NextResponse.json({ ok: true });
