@@ -7,6 +7,8 @@ function Stars({ n }: { n: number }) {
 }
 
 export default function Testimonials() {
+  // Hide SAMPLE quotes on the live site; they show in dev so the layout can be reviewed.
+  if (!gym.testimonialsVerified && process.env.NODE_ENV === "production") return null;
   const [lead, ...rest] = gym.testimonials;
   return (
     <section className="section">

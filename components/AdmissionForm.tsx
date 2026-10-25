@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { gym } from "@/data/gym.config";
 import { leadSchema, planOptions, genders } from "@/lib/schema";
@@ -24,7 +25,9 @@ export default function AdmissionForm() {
   const [billing, setBilling] = useState("quarterly");
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [sent, setSent] = useState(false);
   const [serverMsg, setServerMsg] = useState("");
+  const [leadText, setLeadText] = useState("");
   const [minDate, setMinDate] = useState("");
 
   useEffect(() => {
@@ -66,10 +69,38 @@ export default function AdmissionForm() {
     }
     setErrors({});
     setStatus("loading");
+    const d = parsed.data;
+    const summary = [
+      `${d.mode === "trial" ? "FREE TRIAL" : "ADMISSION"} request`, `Name: ${d.name}`, `Phone: ${String(d.phone)}`, d.email ? `Email: ${d.email}` : "",
+      `Age: ${d.age}, ${d.gender}`, `Plan: ${d.plan}${d.billing ? ` (${gym.billingLabels[d.billing]})` : ""}`, `Batch: ${d.batch}`, `Goal: ${d.goal}`,
+      d.personalTraining ? "Interested in personal training" : "", `Date: ${d.joiningDate}`, d.message ? `Message: ${d.message}` : "",
+    ].filter(Boolean).join("\n");
+    setLeadText(summary);
+
+    // GitHub Pages build (no server): Formspree if configured, else the WhatsApp / email fallback screen.
+    if (process.env.NEXT_PUBLIC_STATIC_EXPORT) {
+      if (!gym.formspreeId) { setSent(false); setStatus("done"); return; }
+      try {
+        const res = await fetch(`https://formspree.io/f/${gym.formspreeId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ ...d, _subject: `New ${d.mode === "trial" ? "free trial" : "admission"} lead: ${d.name}`, _gotcha: d.website ?? "" }),
+        });
+        if (!res.ok) throw new Error("Formspree");
+        setSent(true);
+      } catch {
+        setSent(false); // fall back so the lead is never lost
+      }
+      setStatus("done");
+      return;
+    }
+
+    // Server build (Vercel): /api/lead validates again, rate-limits, saves to Supabase and emails the owner.
     try {
-      const res = await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data) });
+      const res = await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? "Something went wrong. Please try again.");
+      setSent(true);
       setStatus("done");
     } catch (ex) {
       setServerMsg(ex instanceof Error ? ex.message : "Network error. Please try again.");
@@ -77,7 +108,8 @@ export default function AdmissionForm() {
     }
   }
 
-  const wa = `https://wa.me/${gym.whatsapp}?text=${encodeURIComponent(`Hi ${gym.name}, I just submitted a ${mode === "trial" ? "free trial" : "membership"} request on your website.`)}`;
+  const wa = `https://wa.me/${gym.whatsapp}?text=${encodeURIComponent(`Hi ${gym.name}, I would like to book.\n\n${leadText}`)}`;
+  const mail = `mailto:${gym.email}?subject=${encodeURIComponent(`${mode === "trial" ? "Free trial" : "Admission"} request`)}&body=${encodeURIComponent(leadText)}`;
 
   return (
     <section id="join" className="section border-t border-line">
@@ -100,9 +132,16 @@ export default function AdmissionForm() {
           {status === "done" ? (
             <div role="status" className="py-10 text-center">
               <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-accent text-accent-contrast"><Check className="h-8 w-8" /></span>
-              <h3 className="mt-6 text-4xl">You&rsquo;re in</h3>
-              <p className="mx-auto mt-3 max-w-md text-muted">Thanks. We&rsquo;ll call you shortly to confirm your {mode === "trial" ? "free trial" : "admission"}.</p>
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="btn btn-accent mt-8">Continue on WhatsApp</a>
+              <h3 className="mt-6 text-4xl">{sent ? "You’re in" : "One last step"}</h3>
+              <p className="mx-auto mt-3 max-w-md text-muted">
+                {sent
+                  ? <>Thanks. We&rsquo;ll call you shortly to confirm your {mode === "trial" ? "free trial" : "admission"}.</>
+                  : <>Send your details to us on WhatsApp (or email) so we can confirm your {mode === "trial" ? "free trial" : "admission"}.</>}
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="btn btn-accent">{sent ? "Continue on WhatsApp" : "Send on WhatsApp"}</a>
+                {!sent && <a href={mail} className="btn btn-ghost">Send by email</a>}
+              </div>
             </div>
           ) : (
             <form onSubmit={onSubmit} noValidate className="space-y-5" aria-busy={status === "loading"}>
@@ -201,12 +240,14 @@ export default function AdmissionForm() {
               <div>
                 <label className="flex items-start gap-3 text-sm">
                   <input id="f-consent" type="checkbox" name="consent" className="mt-0.5 h-5 w-5 shrink-0 accent-[rgb(var(--accent))]" aria-invalid={!!errors.consent} />
-                  <span>I agree to be contacted about my enquiry and accept the <a href="/privacy-policy" className="text-accent underline">privacy policy</a>.</span>
+                  <span>I agree to be contacted about my enquiry and accept the <Link href="/privacy-policy" className="text-accent underline">privacy policy</Link>.</span>
                 </label>
                 {errors.consent && <p className={err}>{errors.consent}</p>}
               </div>
 
-              {status === "error" && <p role="alert" className={err}>{serverMsg}</p>}
+              {status === "error" && (
+                <p role="alert" className={err}>{serverMsg} <a href={wa} target="_blank" rel="noopener noreferrer" className="underline">Send on WhatsApp instead</a></p>
+              )}
 
               <button type="submit" disabled={status === "loading"} className="btn btn-accent w-full disabled:opacity-60">
                 {status === "loading" ? "Sending…" : mode === "trial" ? "Book my free trial" : "Submit admission request"}

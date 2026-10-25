@@ -1,6 +1,6 @@
 /**
  * Payment seam. Razorpay is NOT built yet; implement `createOrder` and call it from
- * app/api/lead/route.ts (or a new /api/checkout route) once pricing is final.
+ * a server (static hosting has none; use Razorpay Payment Links or move to Vercel/Netlify functions) once pricing is final.
  */
 export type PaymentOrder = { provider: "razorpay"; orderId: string; amountPaise: number; currency: "INR" };
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
+import { withBase, BASE_PATH } from "@/lib/base";
 import { gym } from "@/data/gym.config";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -13,7 +14,7 @@ const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap
 const title = `${gym.name} ${gym.nameAccent} | Gym in ${gym.address.city}`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(gym.siteUrl),
+  metadataBase: new URL(withBase("/") , gym.siteUrl),
   title: { default: title, template: `%s | ${gym.name} ${gym.nameAccent}` },
   description: gym.description,
   openGraph: {
@@ -32,10 +33,10 @@ const jsonLd = {
   "@type": "HealthClub",
   name: `${gym.name} ${gym.nameAccent}`,
   description: gym.description,
-  url: gym.siteUrl,
+  url: new URL(withBase("/"), gym.siteUrl).toString(),
   telephone: gym.phone,
   email: gym.email,
-  image: new URL(gym.assets.og, gym.siteUrl).toString(),
+  image: new URL(withBase(gym.assets.og), gym.siteUrl).toString(),
   address: { "@type": "PostalAddress", streetAddress: `${gym.address.street}, ${gym.address.area}`, addressLocality: gym.address.city, addressRegion: gym.address.state, postalCode: gym.address.postalCode, addressCountry: gym.address.country },
   geo: { "@type": "GeoCoordinates", latitude: gym.geo.lat, longitude: gym.geo.lng },
   openingHoursSpecification: [

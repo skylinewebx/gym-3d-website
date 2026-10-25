@@ -6,7 +6,16 @@ import Pic from "./Pic";
 export default function Trainers({ standalone = false }: { standalone?: boolean }) {
   const H = standalone ? "h1" : "h2";
   const list = gym.trainers.filter((t) => has(t.image));
-  if (!list.length) return null; // hidden until real trainer portraits are added
+  if (!list.length) {
+    // Hidden on the home page until real portraits exist; the /trainers page shows a short note instead of a blank screen.
+    return standalone ? (
+      <section className="container-x section">
+        <p className="eyebrow">Trainers</p>
+        <h1 className="h-section max-w-3xl">Meet the <span className="text-accent">team</span></h1>
+        <p className="mt-6 max-w-xl text-muted">Trainer profiles are coming soon. Book a free trial and we will introduce you to a coach.</p>
+      </section>
+    ) : null;
+  }
   return (
     <section id="trainers" className="section">
       <div className="container-x">

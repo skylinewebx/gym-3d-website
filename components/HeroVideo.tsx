@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { withBase } from "@/lib/base";
 
 type Tier = "720" | "1080" | "1440" | "2160";
 
@@ -33,9 +34,9 @@ export default function HeroVideo({ enabled, poster }: { enabled: boolean; poste
           autoPlay muted loop playsInline preload="metadata"
           onCanPlay={() => setReady(true)}
         >
-          <source src={`/video/hero-${tier}.av1.mp4`} type='video/mp4; codecs="av01.0.08M.08"' />
-          <source src={`/video/hero-${tier}.webm`} type='video/webm; codecs="vp9"' />
-          <source src={`/video/hero-${tier}.mp4`} type="video/mp4" />
+          <source src={withBase(`/video/hero-${tier}.av1.mp4`)} type='video/mp4; codecs="av01.0.08M.08"' />
+          <source src={withBase(`/video/hero-${tier}.webm`)} type='video/webm; codecs="vp9"' />
+          <source src={withBase(`/video/hero-${tier}.mp4`)} type="video/mp4" />
         </video>
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-bg/30" />

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import { Menu, Close } from "./Icons";
 
@@ -12,6 +12,12 @@ const allLinks = [
 export default function Navbar({ showTrainers = true }: { showTrainers?: boolean }) {
   const links = allLinks.filter(([l]) => showTrainers || l !== "Trainers");
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
       <div className="container-x flex h-16 items-center justify-between">

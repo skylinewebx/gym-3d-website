@@ -11,7 +11,7 @@
   --muted: 154 157 168;    /* #9A9DA8 */
 }
 [data-theme="lime"] { --accent: 198 255 61;  --accent-contrast: 11 11 13; }   /* #C6FF3D / #0B0B0D */
-[data-theme="red"]  { --accent: 255 59 48;   --accent-contrast: 255 255 255; } /* #FF3B30 / #FFFFFF */
+[data-theme="red"]  { --accent: 255 59 48;   --accent-contrast: 11 11 13; }    /* #FF3B30 / #0B0B0D (white on this red is only 3.5:1) */
 [data-theme="grey"] { --accent: 212 212 216; --accent-contrast: 11 11 13; }   /* #D4D4D8 / #0B0B0D */
 
 @layer base {

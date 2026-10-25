@@ -1,41 +1,37 @@
 # Gym Website (Next.js, dark, premium)
 
-## Deploy to Vercel (USA, `iad1`): 5 steps
-GitHub only stores the code. It does not run the site. The live site runs on Vercel.
+One codebase, two deploy targets. Pick one.
 
-1. Go to **vercel.com/new** and choose **Continue with GitHub**.
-2. Click **Import** next to this repository. Leave all build settings as they are (Next.js is detected; the region `iad1` is already set in `vercel.json`).
-3. Open **Environment Variables** and add the variables below.
-4. Click **Deploy**. In 1-2 minutes you get a link like `https://your-project.vercel.app`.
-5. Add your own domain under **Settings > Domains**, then set `NEXT_PUBLIC_SITE_URL` to it and redeploy.
+## A) Vercel (recommended: working form API, USA region `iad1`)
+1. vercel.com/new > **Continue with GitHub** > **Import** this repo. Keep the defaults (`npm run build`).
+2. Add these Environment Variables, then **Deploy**:
 
-### Environment variables (exact names)
-| Name | Required | Value |
-|---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | Yes | Your final URL, no trailing slash, e.g. `https://www.yourgym.com` |
-| `SUPABASE_URL` | Yes (to save leads) | Supabase > Project Settings > API > Project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes (to save leads) | Supabase > Project Settings > API > `service_role` key. Keep secret |
-| `RESEND_API_KEY` | Yes (to email the owner) | resend.com > API Keys |
-| `LEAD_NOTIFY_EMAIL` | Yes (to email the owner) | Where new leads are sent |
-| `LEAD_FROM_EMAIL` | Optional | e.g. `Leads <leads@yourgym.com>` (verify the domain in Resend; default is `onboarding@resend.dev`) |
+| Name | Needed for |
+|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Your final URL, no trailing slash (SEO, sitemap) |
+| `SUPABASE_URL` | Saving leads (run `supabase/schema.sql` once in the Supabase SQL editor) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Saving leads. Server only, never public |
+| `RESEND_API_KEY` | Emailing leads to the owner |
+| `LEAD_NOTIFY_EMAIL` | Where lead emails go |
+| `LEAD_FROM_EMAIL` | Optional sender, e.g. `Leads <leads@yourgym.com>` (verify the domain in Resend) |
 
-Before the first lead: run `supabase/schema.sql` once in the Supabase SQL editor. In production the form returns an error if neither Supabase nor Resend is configured, so you never lose leads silently. Do not use static export or GitHub Pages: the form needs the `/api/lead` server route.
+You need Supabase **or** Resend (both is best). If neither is set, the live form shows an error instead of silently losing leads. Add your domain under Settings > Domains.
+
+## B) GitHub Pages (static, no server)
+Run `npm run deploy:pages`. It builds the static site (`npm run build:pages`, API route skipped) and publishes `out/` to the `gh-pages` branch.
+1. One time: repo Settings > Pages > Source = **Deploy from a branch** > `gh-pages` / root.
+2. Live at your custom domain (`public/CNAME`) or `https://<user>.github.io/gym-3d-website/` (then build with env `BASE_PATH=/gym-3d-website`).
+3. The form has no server here: set `NEXT_PUBLIC_FORMSPREE_ID` (formspree.io) in the environment when building to receive emails. Without it, visitors get a "Send on WhatsApp / email" screen with their details pre-filled.
 
 ## Local setup
 ```bash
 npm install
 cp .env.example .env.local   # fill in values (optional for local dev)
 npm run dev                  # http://localhost:3000
-npm run build                # production build
+npm run build                # Vercel build
+npm run build:pages          # GitHub Pages static build (output in out/)
+npm run deploy:pages         # build + publish to the gh-pages branch
 ```
-Without Supabase/Resend keys the form still works locally and logs the lead in the terminal.
-
-### Environment variables
-| Name | Purpose |
-|---|---|
-| `NEXT_PUBLIC_SITE_URL` | Canonical URL for SEO/sitemap |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Lead storage (server only). Run `supabase/schema.sql` once in the SQL editor |
-| `RESEND_API_KEY`, `LEAD_NOTIFY_EMAIL`, `LEAD_FROM_EMAIL` | Owner email on each lead. Verify your sending domain in Resend for production |
 
 ## Edit content
 Everything lives in **`data/gym.config.ts`**: name, phone/WhatsApp, address, timings, prices, trainers, programs, FAQs, testimonials. Anything marked `PLACEHOLDER` or `SAMPLE` must be replaced before launch.
@@ -53,16 +49,11 @@ scripts/optimize-media.sh video  media-src/hero-master.mp4           # hero tier
 FPS=60 scripts/optimize-media.sh video media-src/hero-master.mp4     # smoother 60fps loop
 scripts/optimize-media.sh images media-src/images public/images      # caps at 2560px, never upscales
 ```
-On Windows run it from Git Bash or WSL. Next.js converts photos to AVIF/WebP and serves retina sizes automatically. The hero loads the lightest video tier for phones and shows the poster only on slow/Save-Data connections or with reduced motion. Do not ship raw 8K files.
-
-## Deploy to Vercel (USA)
-1. Push to GitHub and import the repo at vercel.com/new (region is pinned in `vercel.json`: `iad1`).
-2. Add the environment variables above in Project Settings > Environment Variables.
-3. Settings > Domains: add your domain and set the DNS records Vercel shows.
-4. Set `NEXT_PUBLIC_SITE_URL` to the final domain and redeploy.
+On Windows run it from Git Bash or WSL. Photos are pre-sized JPEGs (max 2560px, quality 90; Vercel also serves AVIF/WebP); `node scripts/import-assets.mjs "<folder>"` regenerates them with sharpening and blur placeholders. The hero loads the lightest video tier for phones and shows the poster only on slow/Save-Data connections or with reduced motion. Do not ship raw 8K files.
 
 ## Notes
-- Rate limiting is in-memory (best effort on serverless). For strict limits use Upstash Ratelimit in `lib/ratelimit.ts`.
-- Razorpay is not built; `lib/payments.ts` is the seam.
+- Spam protection: hidden honeypot field; on Vercel also server-side validation and an in-memory rate limit (5 per 10 min per IP, best effort on serverless; use Upstash for strict limits).
+- Razorpay is not built; `lib/payments.ts` is the seam (Vercel only).
+- Testimonials are hidden in production until `testimonialsVerified: true` in the config.
 - Animations respect `prefers-reduced-motion`.
-- Add `app/favicon.ico` for the tab icon.
+- Favicon is `app/icon.svg`.

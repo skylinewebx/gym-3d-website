@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { withBase } from "@/lib/base";
 import blurMap from "@/data/blur.json";
 
 // Tiny dark blur placeholder shown while the real image decodes.
@@ -40,7 +41,7 @@ export default function Pic({ src, alt, exists, sizes, priority, quality = 90, c
   }
   return (
     <Image
-      src={src}
+      src={withBase(src)}
       alt={alt}
       fill
       sizes={sizes}

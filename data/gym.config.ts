@@ -16,7 +16,10 @@ export const gym = {
   tagline: "Train hard. Stay consistent. See real progress.",
   description:
     "A premium strength and conditioning gym with expert coaches, modern equipment and programs for every goal.",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example-gym.com",
+  // Origin only (no path). Default is the custom domain on GitHub Pages; change it if the domain changes.
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://gym3d.skylinewebx.com",
+  // Formspree form ID (formspree.io, free). Leave empty to use the WhatsApp + email fallback.
+  formspreeId: process.env.NEXT_PUBLIC_FORMSPREE_ID || "",
 
   // ---- Contact (PLACEHOLDER) ----
   phone: "+91 98765 43210",
@@ -152,6 +155,8 @@ export const gym = {
   batchOptions: ["Morning", "Afternoon", "Evening", "Women-only"],
   goals: ["Weight loss", "Muscle gain", "General fitness", "Sports", "Other"],
 
+  // Set true ONLY after replacing the samples below with real, permitted member quotes. Until then the section is hidden in production.
+  testimonialsVerified: false,
   testimonials: [
     // SAMPLE content: replace with real member quotes (with permission) before launch.
     { quote: "Sample testimonial. Replace this with a real member quote describing their experience and result.", name: "Member Name", result: "Result / duration", rating: 5 },

@@ -1,5 +1,7 @@
 # Asset list
 
+**Status:** supplied and live: 5 program photos (cardio, strength, hybrid, functional, muscle-gain), all 7 facility photos, floor-wide, 3d-render, hero-poster, og, logo.svg, favicon. **Still needed:** hero loop video, programs weight-loss / yoga-zumba / personal-training, trainer-1..4. Missing programs, trainers and gallery photos are hidden automatically; other missing files show a labelled placeholder.
+
 Drop files at these paths (under `public/`). Until a file exists, the site shows a labelled placeholder block.
 Supply masters at 4K+; run `scripts/optimize-media.sh` to produce web files. All photos are `.jpg`.
 

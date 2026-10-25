@@ -6,3 +6,4 @@ node_modules
 next-env.d.ts
 /media-src
 .claude
+out
