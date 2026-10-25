@@ -19,7 +19,7 @@ export default function Navbar({ showTrainers = true }: { showTrainers?: boolean
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/95">
       <div className="container-x flex h-16 items-center justify-between">
         <Logo />
         <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">

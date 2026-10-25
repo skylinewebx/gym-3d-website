@@ -9,7 +9,7 @@ export default function MoreThanGym() {
   return (
     <section className="section border-y border-line bg-surface/40">
       <div className="container-x grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <Reveal dir="left"><div className="card relative aspect-[4/3] overflow-hidden">
+        <Reveal dir="left"><div className="card grade relative aspect-[4/3] overflow-hidden">
           <Pic src={m.image} alt={`Inside ${gym.name}`} exists={has(m.image)} sizes="(min-width:1024px) 50vw, 100vw" />
         </div></Reveal>
         <Reveal dir="right"><div>

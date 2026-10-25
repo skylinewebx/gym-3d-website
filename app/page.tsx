@@ -9,7 +9,7 @@ import Trainers from "@/components/Trainers";
 import Pricing from "@/components/Pricing";
 import Timings from "@/components/Timings";
 import Testimonials from "@/components/Testimonials";
-import AdmissionForm from "@/components/AdmissionForm";
+import LazyForm from "@/components/LazyForm";
 import FAQ from "@/components/FAQ";
 import CtaBand from "@/components/CtaBand";
 import Contact from "@/components/Contact";
@@ -28,7 +28,7 @@ export default function Home() {
       <Pricing />
       <Timings />
       <Testimonials />
-      <AdmissionForm />
+      <LazyForm />
       <FAQ />
       <CtaBand />
       <Contact />

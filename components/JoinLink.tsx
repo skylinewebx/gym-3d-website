@@ -1,12 +1,11 @@
-"use client";
-import Link from "next/link";
-import { sendPrefill, type Prefill } from "@/lib/prefill";
+import { withBase } from "@/lib/base";
+import type { Prefill } from "@/lib/prefill";
 
-/** Link to the admission form that also pre-selects mode / plan / billing. */
+/** Link to the admission form that also pre-selects mode / plan / billing (handled by <Behaviors />). */
 export default function JoinLink({ prefill, className, children }: { prefill?: Prefill; className?: string; children: React.ReactNode }) {
   return (
-    <Link href="/#join" className={className} onClick={() => prefill && sendPrefill(prefill)}>
+    <a href={withBase("/") + "#join"} className={className} data-prefill={prefill ? JSON.stringify(prefill) : undefined}>
       {children}
-    </Link>
+    </a>
   );
 }

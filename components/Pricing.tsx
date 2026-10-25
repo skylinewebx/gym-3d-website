@@ -41,20 +41,20 @@ export default function Pricing({ standalone = false }: { standalone?: boolean }
             const dir = i === 0 ? "left" : i === last ? "right" : "up";
             return (
               <Reveal key={p.id} dir={dir} className="h-full">
-                <div className={cn("card relative flex h-full flex-col p-7", p.highlight && "border-accent bg-accent text-accent-contrast")}>
+                <div className={cn("card card-hover relative flex h-full flex-col p-7 sm:p-8", p.highlight && "border-accent bg-accent text-accent-contrast [background-image:none]")}>
                   {"badge" in p && p.badge && (
                     <span className="absolute -top-3 left-7 rounded-full bg-bg px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent ring-1 ring-accent">{p.badge}</span>
                   )}
                   <h3 className="text-3xl">{p.name}</h3>
                   <p className={cn("mt-2 text-sm", p.highlight ? "opacity-80" : "text-muted")}>{p.blurb}</p>
-                  <p className="mt-6 font-display text-6xl font-extrabold leading-none">{inr(price)}</p>
+                  <p className="mt-6 font-display text-[clamp(3.25rem,6vw,4.25rem)] font-extrabold leading-none">{inr(price)}</p>
                   <p className={cn("mt-2 text-sm", p.highlight ? "opacity-80" : "text-muted")}>
                     per {gym.billingLabels[b].toLowerCase()}
                     {save > 0 && <> · <strong>save {save}%</strong></>}
                   </p>
-                  <ul className="mt-6 flex-1 space-y-3 text-sm">
+                  <ul className="mt-7 flex-1 space-y-3.5 border-t border-current/15 pt-6 text-[15px]">
                     {p.features.map((f) => (
-                      <li key={f} className="flex gap-3"><Check className="mt-0.5 h-4 w-4 shrink-0" />{f}</li>
+                      <li key={f} className="flex items-start gap-3"><span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full", p.highlight ? "bg-accent-contrast text-accent" : "bg-accent/15 text-accent")}><Check className="h-3 w-3" /></span>{f}</li>
                     ))}
                   </ul>
                   <JoinLink prefill={{ mode: "join", plan: p.name, billing: b }}

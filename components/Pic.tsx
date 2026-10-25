@@ -47,8 +47,9 @@ export default function Pic({ src, alt, exists, sizes, priority, quality = 90, c
       sizes={sizes}
       quality={quality}
       priority={priority}
-      placeholder="blur"
-      blurDataURL={(blurMap as Record<string, string>)[src] ?? BLUR}
+      // The tiny pre-made preview is used as a plain CSS background (smooth when upscaled). next/image's own
+      // placeholder="blur" wraps it in an SVG blur filter per image, which is costly on phones.
+      style={{ backgroundImage: `url("${(blurMap as Record<string, string>)[src] ?? BLUR}")`, backgroundSize: "cover" }}
       className={cn(fit === "cover" ? "object-cover" : "object-contain", focal, className)}
     />
   );

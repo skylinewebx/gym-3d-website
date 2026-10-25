@@ -95,14 +95,15 @@ export const gym = {
     ],
   },
 
+  // Captions and "fact" chips are PLACEHOLDERS: replace with your real equipment counts and specs.
   gallery: [
-    { src: "/images/facilities/cardio.jpg", alt: "Cardio zone with treadmills and bikes", zone: "Cardio Zone" },
-    { src: "/images/facilities/strength.jpg", alt: "Strength zone with racks and benches", zone: "Strength Zone" },
-    { src: "/images/facilities/dumbbells.jpg", alt: "Dumbbell and free weights rack", zone: "Dumbbells / Free Weights" },
-    { src: "/images/facilities/machines.jpg", alt: "Selectorised strength machines", zone: "Machines" },
-    { src: "/images/facilities/functional.jpg", alt: "Functional training area", zone: "Functional Area" },
-    { src: "/images/facilities/lockers.jpg", alt: "Locker and changing room", zone: "Locker/Changing" },
-    { src: "/images/facilities/reception.jpg", alt: "Reception desk", zone: "Reception" },
+    { src: "/images/facilities/cardio.jpg", alt: "Cardio zone with treadmills and bikes", zone: "Cardio Zone", title: "Cardio Zone", desc: "Treadmills, cross-trainers and bikes with a clear view of the whole floor.", fact: "20+ cardio stations" },
+    { src: "/images/facilities/strength.jpg", alt: "Strength zone with racks and benches", zone: "Strength Zone", title: "Strength Zone", desc: "Power racks, benches and platforms built for heavy, safe training.", fact: "6 power racks" },
+    { src: "/images/facilities/dumbbells.jpg", alt: "Dumbbell and free weights rack", zone: "Dumbbells / Free Weights", title: "Free Weights", desc: "A full dumbbell rack with mirrors for clean form checks.", fact: "Dumbbells up to 50 kg" },
+    { src: "/images/facilities/machines.jpg", alt: "Selectorised strength machines", zone: "Machines", title: "Machines", desc: "Selectorised machines covering every major muscle group.", fact: "30+ machines" },
+    { src: "/images/facilities/functional.jpg", alt: "Functional training area", zone: "Functional Area", title: "Functional Area", desc: "Turf, sled, rig and plyo boxes for conditioning work.", fact: "Turf + sled lane" },
+    { src: "/images/facilities/lockers.jpg", alt: "Locker and changing room", zone: "Locker/Changing", title: "Lockers & Changing", desc: "Clean, secure lockers and a comfortable changing area.", fact: "Secure lockers" },
+    { src: "/images/facilities/reception.jpg", alt: "Reception desk", zone: "Reception", title: "Reception", desc: "A friendly front desk for memberships, trials and questions.", fact: "Open 7 days" },
   ],
 
   featureVisual: {

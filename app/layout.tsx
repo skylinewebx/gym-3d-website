@@ -6,9 +6,10 @@ import { gym } from "@/data/gym.config";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { has } from "@/lib/assets";
+import Behaviors from "@/components/Behaviors";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
-const display = Barlow_Condensed({ subsets: ["latin"], weight: ["600", "700", "800", "900"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
+const display = Barlow_Condensed({ subsets: ["latin"], weight: ["700", "800"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
 const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 const title = `${gym.name} ${gym.nameAccent} | Gym in ${gym.address.city}`;
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main" className="overflow-x-clip">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <Behaviors />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
     </html>

@@ -25,8 +25,8 @@ export default function Trainers({ standalone = false }: { standalone?: boolean 
           {list.map((t, i) => (
             <li key={t.name}>
               <Reveal dir={i % 2 === 0 ? "left" : "right"} delay={(i % 4) * 70} className="h-full">
-              <div className="group card h-full overflow-hidden">
-              <div className="relative aspect-[3/4] overflow-hidden">
+              <div className="group card card-hover h-full overflow-hidden">
+              <div className="grade relative aspect-[3/4] overflow-hidden">
                 {/* Black-and-white by default, colour on hover */}
                 <div className="absolute inset-0 grayscale transition duration-500 group-hover:grayscale-0">
                   <Pic src={t.image} alt={`${t.name}, ${t.role}`} exists focal="object-top" sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" />

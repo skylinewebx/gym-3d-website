@@ -16,7 +16,7 @@ export default function Hero() {
       />
       <div className="container-x hero-in relative pb-14 pt-32 sm:pb-20">
         <p className="eyebrow">{gym.address.area}, {gym.address.city}</p>
-        <h1 className="max-w-4xl text-[clamp(3rem,10vw,7.5rem)] font-black italic">
+        <h1 className="max-w-4xl text-[clamp(3rem,10vw,7.5rem)] font-extrabold italic">
           Train harder.<br />Become <span className="text-accent">unstoppable.</span>
         </h1>
         <p className="mt-6 max-w-xl text-base text-muted sm:text-lg">{gym.description}</p>

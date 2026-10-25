@@ -8,11 +8,11 @@
 # Needs ffmpeg (with libx264, libvpx-vp9, and optionally libsvtav1). Install: https://ffmpeg.org/download.html
 # Keep originals OUT of /public (use /media-src, which is git-ignored). Never ship raw 8K.
 #
-# FPS: set FPS=60 for the smoothest hero loops (default 30). Slow-motion footage shot at 120-240fps
+# FPS: default 60 (smoothest hero loops); set FPS=30 for smaller files. Slow-motion footage shot at 120-240fps
 # is fine as a source; it is exported to FPS here.
 set -euo pipefail
 
-FPS="${FPS:-30}"
+FPS="${FPS:-60}"   # hero loops are smoothest at 60; the 720p mobile tier is capped at 30 to stay light
 OUT_VIDEO="${OUT_VIDEO:-public/video}"
 command -v ffmpeg >/dev/null || { echo "ffmpeg not found"; exit 1; }
 has_enc() { ffmpeg -hide_banner -encoders 2>/dev/null | grep -q "$1"; }
@@ -22,7 +22,8 @@ video() {
   # tier:height:crf-h264:crf-vp9:crf-av1:maxrate
   for t in "720:720:26:34:36:2500k" "1080:1080:23:31:34:6000k" "1440:1440:22:30:33:11000k" "2160:2160:21:29:32:22000k"; do
     IFS=: read -r name h c264 cvp9 cav1 maxr <<<"$t"
-    local vf="scale=-2:'min($h,ih)':flags=lanczos,fps=$FPS,format=yuv420p"
+    local tf="$FPS"; [ "$name" = "720" ] && [ "$FPS" -gt 30 ] && tf=30
+    local vf="scale=-2:'min($h,ih)':flags=lanczos,fps=$tf,format=yuv420p"
     echo ">> hero-$name"
     # H.264 MP4: universal fallback (faststart so playback begins before the download ends)
     ffmpeg -y -loglevel error -i "$src" -an -vf "$vf" -c:v libx264 -preset slow -crf "$c264" -maxrate "$maxr" -bufsize "$maxr" -profile:v high -movflags +faststart "$OUT_VIDEO/hero-$name.mp4"

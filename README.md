@@ -39,7 +39,7 @@ Everything lives in **`data/gym.config.ts`**: name, phone/WhatsApp, address, tim
 ## Switch theme
 In `data/gym.config.ts` change one line: `theme: "lime" | "red" | "grey"`. Token values are in `app/globals.css`; add a new theme by adding a `[data-theme="x"]` block.
 
-**Contrast note (WCAG AA, 4.5:1 for normal text):** lime and grey accents with `#0B0B0D` text pass (about 16:1 and 14:1), and accents on the `#0A0B10` background pass. Red `#FF3B30` with white text is about 3.5:1, which passes only for large/bold text. For small text on red buttons, change `--accent-contrast` for red to `11 11 13` (about 5.9:1).
+**Contrast (WCAG AA, measured):** text on background 17.6:1, muted text 7.3:1. Accent as text on the dark background: lime 16.6, red 5.5, grey 13.3. Dark text on accent buttons: lime 16.6, red 5.5, grey 13.3. All pass 4.5:1. (White text on the red accent would only be 3.6:1, so the red theme uses dark text.)
 
 ## Images and video
 See `ASSETS.md` for every filename, size and subject. Missing files show a labelled placeholder.
