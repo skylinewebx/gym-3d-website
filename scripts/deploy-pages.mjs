@@ -6,10 +6,10 @@ import os from "node:os";
 import path from "node:path";
 
 const run = (cmd, args, opts = {}) => {
-  const r = spawnSync(cmd, args, { stdio: "inherit", shell: process.platform === "win32", ...opts });
+  const r = spawnSync(cmd, args, { stdio: "inherit", shell: false, ...opts });
   if (r.status !== 0) { console.error(`Failed: ${cmd} ${args.join(" ")}`); process.exit(r.status ?? 1); }
 };
-const out = (cmd, args) => spawnSync(cmd, args, { encoding: "utf8", shell: process.platform === "win32" }).stdout.trim();
+const out = (cmd, args) => spawnSync(cmd, args, { encoding: "utf8" }).stdout.trim();
 
 run("node", ["scripts/build-pages.mjs"]);
 if (!fs.existsSync("out/index.html")) { console.error("out/index.html missing"); process.exit(1); }
